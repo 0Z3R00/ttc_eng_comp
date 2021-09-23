@@ -2,8 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const WebSocket = require('ws');
 var http = require('http');
-const dataAtual = require("./src/componentes/dataAtual");
-const horarioAtual = require("./src/componentes/horarioAtual");
 const CampoInvalido = require('./src/error/CampoInvalido');
 const Sensor = require('./src/rotas/sensor/Sensor');
 const roteadorSensor = require('./src/rotas/sensor');
@@ -23,7 +21,7 @@ require('dns').lookup(require('os').hostname(), function (err, add, fam) {
 const webSocket = new WebSocket.Server({ server });
 
 
-webSocket.on('connection', async function(ws, req) {
+webSocket.on('connection', async function(ws, req, proximo) {
   ws.on('message', async function(message) {
 
     const nodeMCU = String(message);
