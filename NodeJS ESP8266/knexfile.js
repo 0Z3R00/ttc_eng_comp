@@ -6,7 +6,7 @@
         host : 'localhost',
         user : 'root',
         password : 'root',
-        database : 'ProjetoPI',
+        database : 'ProjetoTCC',
         port: 3306
       }
     }
