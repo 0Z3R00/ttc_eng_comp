@@ -75,7 +75,6 @@ webSocket.on('connection', async function(ws, req) {
 }
 );
 
-
 const portAPI = 3005;
 const portWS = 3003;
 
