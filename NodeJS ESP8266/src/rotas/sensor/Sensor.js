@@ -23,7 +23,8 @@ class Sensor {
             valor: this.valor,
             unidade_medida: this.unidade_medida
         });
-        this.id = resultado.id;
+        this.id = resultado;
+        this.carregar();
     }
 
     async carregar() {
@@ -34,6 +35,7 @@ class Sensor {
             this.valor = result[0].valor;
             this.unidade_medida = result[0].unidade_medida
             this.data_criacao = result[0].data_criacao;
+            this.horario_criacao = result[0].horario_criacao;
         }else{
             throw new NaoEncontrado(this.id);
         }

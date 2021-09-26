@@ -21,55 +21,54 @@ require('dns').lookup(require('os').hostname(), function (err, add, fam) {
 const webSocket = new WebSocket.Server({ server });
 
 
-webSocket.on('connection', async function(ws, req, proximo) {
-  ws.on('message', async function(message) {
+webSocket.on('connection', async function (ws, req, proximo) {
+  ws.on('message', async function (message) {
 
     const nodeMCU = String(message);
     var msg = nodeMCU.split('"');
     var value = msg[0].split("'");
-
+    var id = 0;
     const valueSensor = {
       nome: value[1],
       valor: Number(value[3]),
       unidade_medida: value[5],
     }
-   
+    const novoSensor = new Sensor(valueSensor);
 
-    if(ultimoValorRecebido === 0){
-      ultimoValorRecebido = valueSensor.valor;
-      try {
-        const novoSensor = new Sensor(valueSensor);
-        await novoSensor.criar();
-  
-      } catch (error) {
-        proximo(error);
-      }
-    }else {
-      if(valueSensor.valor !== ultimoValorRecebido){
-        try {
-          const novoSensor = new Sensor(valueSensor);
-          await novoSensor.criar();
-    
-        } catch (error) {
-          proximo(error);
-        }
-        ultimoValorRecebido = valueSensor.valor;
-      }
+
+    try {
+      await novoSensor.criar();
+      await novoSensor.carregar();
+      sendMessage();
+    } catch (error) {
+      proximo(error);
     }
+    ultimoValorRecebido = valueSensor.valor;
+
+
     //listaDados.push(dado);
-    console.log(valueSensor);
-    webSocket.clients.forEach(function (client) {
-      if (client != ws && client.readyState) {
-        client.send("broadcast: " + message);
-      }
-    });
+
+
+    function sendMessage() {
+      webSocket.clients.forEach(function (client) {
+        let newData = {
+          nome: novoSensor.nome,
+          valor: novoSensor.valor,
+          horario: novoSensor.horario_criacao
+        }
+        console.log("Repassando info para os cliente conectados");
+        if (client != ws && client.readyState) {
+          client.send(JSON.stringify(newData));
+        }
+      });
+    }
 
   });
   ws.on('close', function () {
-    console.log("NodeMCU ESP8266 desconectado ...");
+    console.log("cliente desconectado ...");
   });
 
-  console.log("NodeMCU ESP8266 conectado ...");
+  console.log("cliente conectado ...");
 }
 );
 
