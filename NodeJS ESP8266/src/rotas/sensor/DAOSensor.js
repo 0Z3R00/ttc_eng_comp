@@ -15,9 +15,8 @@ module.exports = {
                 valor: sensor.valor,
                 unidade_medida: sensor.unidade_medida,
                 data_criacao: dataAtual(),
-                horario_criacao: horarioAtual()
+                horario_criacao: horarioAtual(),
             });
-
             return result;
 
         } catch (error) {

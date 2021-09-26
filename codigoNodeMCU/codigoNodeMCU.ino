@@ -11,7 +11,7 @@ char path[] = "/";   //identifier of this device
 
 const char* ssid     = "Familia Moura";
 const char* password = "F4m1l14@";
-char* host = "192.168.1.10";
+char* host = "192.168.1.9";
 const int espport = 3003;
 
 WebSocketClient webSocketClient;
@@ -54,7 +54,7 @@ void loop() {
     webSocketClient.sendData(dados);//send sensor data to websocket server
   }
 
-  delay(5);
+  delay(1000);
 }
 
 
