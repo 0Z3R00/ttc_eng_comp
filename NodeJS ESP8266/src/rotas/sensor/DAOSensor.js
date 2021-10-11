@@ -1,11 +1,17 @@
 const knex = require("../../database/connection");
-const dataAtual = require("../../componentes/dataAtual");
 const NaoEncontrado = require("../../error/NaoEncontrado");
-const horarioAtual = require("../../componentes/horarioAtual");
 
 module.exports = {
     async listar() {
         return await knex.select().from('sensores');
+    },
+
+    async listarDatas() {
+        return await knex.select('data_criacao').from('sensores').distinct('data_criacao');
+    },
+
+    async consultarData(data) {
+        return await knex.select('horario_criacao', 'valor').from('sensores').where('data_criacao', data).distinct('horario_criacao','valor');
     },
 
     async inserir(sensor) {
@@ -14,8 +20,8 @@ module.exports = {
                 nome: sensor.nome,
                 valor: sensor.valor,
                 unidade_medida: sensor.unidade_medida,
-                data_criacao: dataAtual(),
-                horario_criacao: horarioAtual(),
+                data_criacao: sensor.data_criacao,
+                horario_criacao: sensor.horario_criacao,
             });
             return result;
 

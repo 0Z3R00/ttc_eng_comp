@@ -12,6 +12,23 @@ roteador.get('/', async (requisicao, resposta) => {
     resposta.status(200).send(resultados);
 });
 
+roteador.get('/datas', async (requisicao, resposta) => {
+    const resultados = await DAOSensor.listarDatas();
+    filtrar(resultados);
+    resposta.status(200).send(resultados);
+});
+
+roteador.post('/datas', async (requisicao, resposta) => {
+    try {
+        const dados = requisicao.body;
+        console.log(dados);
+        const resultados = await DAOSensor.consultarData(dados.data);
+        resposta.status(200).send(resultados);
+    } catch (error) {
+        proximo(error);
+    }
+});
+
 roteador.post('/valor', async (requisicao, resposta, proximo) => {
     try {
         const dados = requisicao.body;
