@@ -21,7 +21,9 @@ class Sensor {
         const resultado = await DAOSensor.inserir({
             nome: this.nome,
             valor: this.valor,
-            unidade_medida: this.unidade_medida
+            unidade_medida: this.unidade_medida,
+            data_criacao: this.data_criacao,
+            horario_criacao: this.horario_criacao,
         });
         this.id = resultado;
         this.carregar();

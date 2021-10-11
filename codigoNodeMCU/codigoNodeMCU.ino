@@ -11,7 +11,7 @@ char path[] = "/";   //identifier of this device
 
 const char* ssid     = "Familia Moura";
 const char* password = "F4m1l14@";
-char* host = "192.168.1.9";
+char* host = "192.168.1.14";
 const int espport = 3003;
 
 WebSocketClient webSocketClient;
