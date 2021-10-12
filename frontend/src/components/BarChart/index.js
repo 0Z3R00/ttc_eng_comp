@@ -31,7 +31,7 @@ export default function BarChart(props) {
                         options={{
                             title: props.title,
                             chartArea: {
-                                width: '80%',
+                                width: '100%',
                                 height: '75%'
                             },
                             annotations: {
