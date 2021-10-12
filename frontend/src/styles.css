@@ -1,9 +1,14 @@
 body{
+    
+    margin: 0;  
+}
+
+#root{
+    width: 100vw;
     display:flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 100vw;
     margin: 0;
 }
 
@@ -16,7 +21,7 @@ body{
 }
 
 header{
-    width: 100%;
+    width: 100vw;
     background-color: rgb(2, 102, 116);
     color: #fff;
     display:flex;
@@ -39,6 +44,29 @@ header{
     margin-bottom: 2em;
 }
 
+.graficos{
+margin-bottom: 4em;
+}
+
+.status-sensor{
+    margin-top: 1em;
+    width: 80%;
+    display: flex;
+    font-weight: 700;
+    color: #fff;
+    background-color: #00E031;
+    align-items: center;
+    justify-content: center;
+}
+
+.status-sensor>span{
+    margin-left: 1em;
+}
+
+.info-status{
+    margin-left: 0.5em;
+}
+
 .historico-consulta{
     width: 80%;
     display:flex;
@@ -53,21 +81,42 @@ header{
     color: #fff;
 }
 
-.historico-consulta>section{
-    margin-bottom: 4em;
-}
+
 
 form {
     width: 40%;
     display:flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+}
+
+form>select{
+    width: 40%;
+    height: 2em;
+    text-align: center;
+    border-radius: 0.5em;
+    margin-right: 0.5em;
 }
 
 form>button{
     width: 10em;
     height: 2em;
     font-weight: 700;
+    border-radius: 0.5em;
+    border: 1px solid;
+    border-style: groove;
+}
+
+form>button:active{
+    background-color: rgb(91, 190, 112);
+    border-color:#00E031;
+    border-style: inset;
+}
+
+.grafico-consulta{
+    margin-top: 2em;
+    font-weight: 700;
+    color: #fff;
 }
 
 footer{
