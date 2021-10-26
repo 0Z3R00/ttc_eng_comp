@@ -1,92 +1,75 @@
-/*******************Esp8266_Websocket.ino****************************************/
-
 #include <ESP8266WiFi.h>
 #include <WebSocketClient.h>
 
-boolean handshakeFailed = 0;
+boolean conexaoWS = 0;
 int val = 0;
 String dados = "";
-
-char path[] = "/";   //identifier of this device
-
+char path[] = "/";
 const char* ssid     = "Familia Moura";
 const char* password = "F4m1l14@";
 char* host = "192.168.1.14";
 const int espport = 3003;
-
-WebSocketClient webSocketClient;
+unsigned long tempo;
 
 
 WiFiClient client;
+WebSocketClient webSocketClient;
+
+void conecta() {
+  Serial.print("Iniciando a conexão: ");
+  Serial.println(ssid);
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.println("...tentando se conectar");
+  }
+  Serial.println("Conexão WiFi realizada com sucesso!!!");
+  Serial.print("Endereço IP: ");
+  Serial.println(WiFi.localIP());
+  realizaConexaoWS();
+}
+
+void realizaConexaoWS() {
+  if (client.connect(host, espport)) {
+    Serial.println("Iniciando conexao WebSocket!!!!");
+    webSocketClient.path = path;
+    webSocketClient.host = host;
+    if (webSocketClient.handshake(client)) {
+      conexaoWS = true;
+      Serial.println("Conexao WebSocket realizado com sucesso!!!!");
+    } else {
+      Serial.println("Houve falha na conexão WebSocket, tentaremos novamente ...");
+      conexaoWS = false;
+    }
+  } else {
+    Serial.println("Cade o servidor ???");
+    conexaoWS = false;
+  }
+}
 
 
 void setup() {
   Serial.begin(9600);
   delay(10);
-  Serial.println();
-  Serial.println();
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
-
-  WiFi.begin(ssid, password);
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-
-  Serial.println("");
-  Serial.println("WiFi connected");
-  Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
-
-  delay(1000);
-
-  wsconnect();
+  conecta();
+  delay(500);
+  tempo = millis();
 }
 
 void loop() {
 
   if (client.connected()) {
-    val = analogRead(A0);
-    val = map(val, 0, 1023, 200, 10000);
-    dados = "nome'Sensor da Caldeira'valor'" + (String)val + "'unidade'ppm";
-    webSocketClient.sendData(dados);//send sensor data to websocket server
-  }
-
-  delay(1000);
-}
-
-
-void wsconnect() {
-  // Connect to the websocket server
-  if (client.connect(host, espport)) {
-    Serial.println("Connected");
-  } else {
-    Serial.println("Connection failed.");
-    delay(1000);
-
-    if (handshakeFailed) {
-      handshakeFailed = 0;
-      ESP.restart();
+    if ((millis() - tempo) >= 1000) {
+      if (conexaoWS == true) {
+        Serial.println("chegou aqui!!! depois do conexaoWS");
+        val = analogRead(A0);
+        val = map(val, 0, 1023, 200, 10000);
+        dados = "nome'Sensor da Caldeira'valor'" + (String)val + "'unidade'ppm";
+        Serial.println(dados);
+        webSocketClient.sendData(dados);//send sensor data to websocket server
+        tempo = millis();
+      }
     }
-    handshakeFailed = 1;
-  }
-
-  // Handshake with the server
-  webSocketClient.path = path;
-  webSocketClient.host = host;
-  if (webSocketClient.handshake(client)) {
-    Serial.println("Handshake successful");
-  } else {
-
-    Serial.println("Handshake failed.");
-    delay(4000);
-
-    if (handshakeFailed) {
-      handshakeFailed = 0;
-      ESP.restart();
-    }
-    handshakeFailed = 1;
   }
 }
